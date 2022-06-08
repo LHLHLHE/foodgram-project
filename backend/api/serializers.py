@@ -48,12 +48,11 @@ class CustomUserSerializer(UserSerializer):
         )
 
     def get_is_subscribed(self, obj):
-        if self.context['request'].user.is_authenticated:
-            return Follow.objects.filter(
-                user=self.context['request'].user,
-                author=obj
-            ).exists()
-        return False
+        return (self.context['request'].user.is_authenticated
+                and Follow.objects.filter(
+                    user=self.context['request'].user,
+                    author=obj
+                ).exists())
 
 
 class CustomPasswordSerializer(PasswordSerializer):
@@ -177,23 +176,23 @@ class RecipeGetSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True)
     author = CustomUserSerializer(read_only=True)
     image = Base64ImageField()
-    is_favorite = serializers.SerializerMethodField()
+    is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
 
     class Meta:
         model = Recipe
         fields = '__all__'
 
-    def get_is_favorite(self, obj):
+    def get_is_favorited(self, obj):
         return Favorite.objects.filter(
-            user=self.context['request'].user.id,
-            favorite_recipe_id=obj.id
+            user=self.context['request'].user,
+            favorite_recipe=obj
         ).exists()
 
     def get_is_in_shopping_cart(self, obj):
         return ShoppingCart.objects.filter(
-            user=self.context['request'].user.id,
-            recipe_id=obj.id
+            user=self.context['request'].user,
+            recipe=obj
         ).exists()
 
 

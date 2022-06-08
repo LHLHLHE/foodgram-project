@@ -3,7 +3,7 @@ from recipes.models import Recipe, Tag
 
 
 class RecipesFilter(filters.FilterSet):
-    author = filters.CharFilter(field_name='author__username')
+    author = filters.CharFilter(field_name='author__id')
     tags = filters.ModelMultipleChoiceFilter(
         queryset=Tag.objects.all(),
         field_name='tags__slug',

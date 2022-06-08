@@ -14,7 +14,8 @@ class Tag(models.Model):
     name = models.CharField(
         max_length=200,
         unique=True,
-        verbose_name='Название')
+        verbose_name='Название'
+    )
     slug = models.SlugField(
         max_length=200,
         unique=True,
@@ -154,7 +155,7 @@ class Favorite(models.Model):
 
     class Meta:
         models.UniqueConstraint(
-            fields=['user', 'favourite_recipe'],
+            fields=('user', 'favourite_recipe'),
             name='unique favourite'
         )
         verbose_name = 'Избранное'
@@ -186,7 +187,7 @@ class ShoppingCart(models.Model):
 
     class Meta:
         models.UniqueConstraint(
-            fields=['user', 'recipe'],
+            fields=('user', 'recipe'),
             name='unique recipe in shopping cart'
         )
         verbose_name = 'Список покупок'

@@ -77,15 +77,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
     pagination_class = RecipesPagination
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipesFilter
+    queryset = Recipe.objects.all()
 
-    def get_queryset(self):
-        queryset = Recipe.objects.all()
-        user = self.request.user
-        if self.request.query_params.get('is_favorite') == '1':
-            queryset = queryset.filter(favorite_recipe__user=user)
-        if self.request.query_params.get('is_in_shopping_cart') == '1':
-            queryset = queryset.filter(recipe_in_shopping_cart__user=user)
-        return queryset
+    # def get_queryset(self):
+    #     queryset = Recipe.objects.all()
+    #     user = self.request.user
+    #     if self.request.query_params.get('is_favorited') == '1':
+    #         queryset = queryset.filter(favorite_recipe__user=user)
+    #     if self.request.query_params.get('is_in_shopping_cart') == '1':
+    #         queryset = queryset.filter(recipe_in_shopping_cart__user=user)
+    #     return queryset
 
     def get_serializer_class(self):
         if self.request.method in SAFE_METHODS:
@@ -127,7 +128,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
 class FollowBaseViewSet(viewsets.GenericViewSet):
     serializer_class = FollowSerializer
-    permission_classes = (CurrentUserPermission,)
 
     def get_queryset(self):
         return self.request.user.follower.all()
@@ -170,8 +170,10 @@ class FavoriteViewSet(
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet
 ):
-    queryset = Favorite.objects.all()
     serializer_class = FavoriteSerializer
+
+    def get_queryset(self):
+        return Favorite.objects.filter(user=self.request.user)
 
     def get_serializer_context(self):
         context = super().get_serializer_context()

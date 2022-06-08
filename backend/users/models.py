@@ -1,31 +1,20 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-from .validators import validate_user
-
-ACCESS_LEVELS = (
-    ('user', 'Авторизованный пользователь'),
-    ('admin', 'Администратор')
-)
-
 
 class CustomUser(AbstractUser):
     '''
     Кастомная модель пользователя
     '''
-    username = models.CharField(
-        max_length=150,
-        unique=True,
-        validators=[validate_user],
-        verbose_name='Логин',
+    ACCESS_LEVELS = (
+        ('user', 'Авторизованный пользователь'),
+        ('admin', 'Администратор')
     )
     email = models.EmailField(
         max_length=254,
         unique=True,
         verbose_name='Эл. почта'
     )
-    first_name = models.CharField(max_length=150, verbose_name='Имя')
-    last_name = models.CharField(max_length=150, verbose_name='Фамилия')
     access_level = models.CharField(
         max_length=150,
         choices=ACCESS_LEVELS,
@@ -34,7 +23,7 @@ class CustomUser(AbstractUser):
         verbose_name='Уровень доступа'
     )
 
-    class Meta(AbstractUser.Meta):
+    class Meta:
         ordering = ('username',)
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
@@ -63,7 +52,7 @@ class Follow(models.Model):
 
     class Meta:
         models.UniqueConstraint(
-            fields=['user', 'author'],
+            fields=('user', 'author'),
             name='unique follow')
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
