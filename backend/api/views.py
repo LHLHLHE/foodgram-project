@@ -6,11 +6,9 @@ from rest_framework import mixins, permissions, status, views, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import SAFE_METHODS
 from rest_framework.response import Response
-
 from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
                             ShoppingCart, Tag)
 from users.models import CustomUser, Follow
-
 from .filters import IngredientSearchFilter, RecipesFilter
 from .pagination import RecipesAndFollowsPagination
 from .permissions import (AdminPermission, CurrentUserPermission,
