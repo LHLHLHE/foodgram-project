@@ -1,8 +1,9 @@
 import textwrap
 
-from core.models import CreateModel
 from django.core.validators import MinValueValidator
 from django.db import models
+
+from core.models import CreateModel
 from users.models import CustomUser
 
 
