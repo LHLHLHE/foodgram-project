@@ -1,21 +1,20 @@
 from djoser.serializers import (
+    PasswordSerializer,
     UserCreateSerializer,
-    UserSerializer,
-    PasswordSerializer
+    UserSerializer
 )
 from drf_extra_fields.fields import Base64ImageField
-from rest_framework import serializers
-from rest_framework.generics import get_object_or_404
-
 from recipes.models import (
-    Tag,
-    Recipe,
+    Favorite,
     Ingredient,
     IngredientRecipe,
-    TagRecipe,
-    Favorite,
-    ShoppingCart
+    Recipe,
+    ShoppingCart,
+    Tag,
+    TagRecipe
 )
+from rest_framework import serializers
+from rest_framework.generics import get_object_or_404
 from users.models import CustomUser, Follow
 
 
