@@ -62,7 +62,7 @@ jobs:
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
             sudo docker pull levkh/foodgram_backend:latest
-            sudo docker pull levkh/foodgram_backend:latest
+            sudo docker pull levkh/foodgram_frontend:latest
             sudo docker-compose stop
             sudo docker-compose rm backend
             sudo docker-compose rm frontend
