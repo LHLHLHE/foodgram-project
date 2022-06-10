@@ -1,4 +1,3 @@
-from django.http import Http404
 from djoser.serializers import (
     UserCreateSerializer,
     UserSerializer,
@@ -52,7 +51,7 @@ class CustomUserSerializer(UserSerializer):
                 and Follow.objects.filter(
                     user=self.context['request'].user,
                     author=obj
-                ).exists())
+        ).exists())
 
 
 class CustomPasswordSerializer(PasswordSerializer):
@@ -156,6 +155,7 @@ class RecipePostSerializer(serializers.ModelSerializer):
             )
         return instance
 
+
 class IngredientInRecipeGetSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='ingredient.id')
     name = serializers.CharField(source='ingredient.name')
@@ -194,6 +194,12 @@ class RecipeGetSerializer(serializers.ModelSerializer):
             user=self.context['request'].user,
             recipe=obj
         ).exists()
+
+
+class RecipeInFollowSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recipe
+        fields = ('id', 'name', 'image', 'cooking_time')
 
 
 class FollowSerializer(serializers.ModelSerializer):
@@ -247,12 +253,21 @@ class FollowSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, obj):
         return Follow.objects.filter(
-            user = self.context['request'].user,
+            user=self.context['request'].user,
             author=obj.author
-            ).exists()
+        ).exists()
 
     def get_recipes(self, obj):
-        return Recipe.objects.filter(author=obj.author)
+        queryset = Recipe.objects.filter(author=obj.author)
+        limit = self.context.get('request').query_params.get('recipes_limit')
+        if limit:
+            try:
+                limit = int(limit)
+                queryset = queryset[:limit]
+            except ValueError:
+                pass
+        serializer = RecipeInFollowSerializer(queryset, many=True)
+        return serializer.data
 
 
 class FavoriteSerializer(serializers.ModelSerializer):

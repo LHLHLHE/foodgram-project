@@ -2,13 +2,17 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
-from rest_framework import viewsets, permissions, mixins, status, views, \
-    filters
+from rest_framework import (
+    viewsets,
+    permissions,
+    mixins,
+    status,
+    views
+)
 from rest_framework.decorators import action
 from rest_framework.permissions import SAFE_METHODS
 from rest_framework.response import Response
 
-from api.pagination import RecipesPagination
 from users.models import CustomUser, Follow
 from recipes.models import (
     Tag,
@@ -18,6 +22,7 @@ from recipes.models import (
     ShoppingCart,
     IngredientRecipe
 )
+from .pagination import RecipesAndFollowsPagination
 from .serializers import (
     CustomUserCreateSerializer,
     CustomUserSerializer,
@@ -35,7 +40,7 @@ from .permissions import (
     CurrentUserPermission,
     ReadOnlyPermission
 )
-from .filters import RecipesFilter
+from .filters import RecipesFilter, IngredientSearchFilter
 
 
 class CustomUserViewSet(UserViewSet):
@@ -66,27 +71,18 @@ class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     permission_classes = (AdminPermission | ReadOnlyPermission,)
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ('name',)
+    filter_backends = (IngredientSearchFilter,)
+    search_fields = ('^name',)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
+    queryset = Recipe.objects.all()
     permission_classes = (
         AdminPermission | CurrentUserPermission | ReadOnlyPermission,
     )
-    pagination_class = RecipesPagination
+    pagination_class = RecipesAndFollowsPagination
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipesFilter
-    queryset = Recipe.objects.all()
-
-    # def get_queryset(self):
-    #     queryset = Recipe.objects.all()
-    #     user = self.request.user
-    #     if self.request.query_params.get('is_favorited') == '1':
-    #         queryset = queryset.filter(favorite_recipe__user=user)
-    #     if self.request.query_params.get('is_in_shopping_cart') == '1':
-    #         queryset = queryset.filter(recipe_in_shopping_cart__user=user)
-    #     return queryset
 
     def get_serializer_class(self):
         if self.request.method in SAFE_METHODS:
@@ -134,7 +130,7 @@ class FollowBaseViewSet(viewsets.GenericViewSet):
 
 
 class FollowListViewSet(mixins.ListModelMixin, FollowBaseViewSet):
-    pass
+    pagination_class = RecipesAndFollowsPagination
 
 
 class FollowCreateDestroyViewSet(
