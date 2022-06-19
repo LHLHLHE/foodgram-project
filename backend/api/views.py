@@ -223,16 +223,11 @@ class ShoppingCartDownloadAPIView(views.APIView):
                 ingredient = row.ingredient
                 amount = row.amount
                 if ingredient in ingredients_and_amount:
-                    if isinstance(ingredients_and_amount[ingredient], list):
-                        ingredients_and_amount[ingredient].append(amount)
-                    else:
-                        ingredients_and_amount[ingredient] = [
-                            ingredients_and_amount[ingredient], amount
-                        ]
+                    ingredients_and_amount[ingredient] += amount
                 else:
                     ingredients_and_amount[ingredient] = amount
         for ingredient, amount in ingredients_and_amount.items():
             response.write(f'\n{ingredient.name}')
             response.write((f' ({ingredient.measurement_unit})'))
-            response.write(f' - {sum(amount)}')
+            response.write(f' - {amount}')
         return response
