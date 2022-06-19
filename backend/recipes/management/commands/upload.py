@@ -28,7 +28,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         for filename in options['filename']:
             path = os.path.join(
-                'C:/Dev/foodgram-project-react/data/'
+                '../../../../data/'
             ) + filename
             with open(path, 'r', encoding='utf-8') as file:
                 reader = csv.reader(file)
