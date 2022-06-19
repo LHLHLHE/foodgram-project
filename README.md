@@ -1,11 +1,17 @@
 # Foodgram
 
+![example workflow](https://github.com/LHLHLHE/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg)
+
 ## Descpription
 The Foodgram service allows everyone to share their recipes with others.
 Here you can create/edit/delete your own recipes, add to favorites and shopping list recipes of other authors.
 The shopping list can be downloaded as a file and taken with you to the store.
 Recipes can be filtered by tags.
 It is also possible to subscribe to your favorite author.
+
+### Admin login and password
+- lev_k
+- 3560
 
 ### Filling the ENV file
 ```
