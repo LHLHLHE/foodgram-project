@@ -9,10 +9,6 @@ The shopping list can be downloaded as a file and taken with you to the store.
 Recipes can be filtered by tags.
 It is also possible to subscribe to your favorite author.
 
-### Admin login and password
-- lev_k
-- 3560
-
 ### Filling the ENV file
 ```
 DB_ENGINE=django.db.backends.postgresql
